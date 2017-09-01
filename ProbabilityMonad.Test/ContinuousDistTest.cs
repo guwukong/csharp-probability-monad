@@ -25,6 +25,13 @@ namespace ProbCSharp.Test
             Debug.WriteLine(Histogram.Unweighted(samples));
 
         }
+
+        [TestMethod]
+        public void LearnGaussian()
+        {
+                
+        }
+
         [TestMethod]
         public void UniformTest()
         {
@@ -43,17 +50,18 @@ namespace ProbCSharp.Test
 
             var muM = y.Mean();
             var muP = 0.000001*1/(Math.Pow(y.StandardDeviation(), 2.0));
-            var sigmaLow = y.StandardDeviation()/1000.0;
-            var sigmaHigh = y.StandardDeviation()*1000.0;
+            var muv = (y.Variance())/0.00001;
+            var sigmaLow = y.Variance()/1000.0;
+            var sigmaHigh = y.Variance()*1000.0;
 
 
             var hist = from nu in Exponential(1.0/29)
-                       from mu in Normal(muM, muP)
+                       from mu in Normal(muM, muv)
                        from tau in (from m in Uniform(sigmaLow, sigmaHigh)
                                     select 1 / Math.Pow(m, 2.0))
                        from n in StudentT(mu, tau, nu + 1)
                        select n;
-            var smcPosterior = hist.SmcStandard(1000);
+            var smcPosterior = hist.SmcStandard(10000);
             var samples = smcPosterior.Sample();
 
 
@@ -79,12 +87,13 @@ namespace ProbCSharp.Test
             var linReg = LinearRegression.CreateLinearRegression(prior, LinearRegression.LinearData);
 
             // Basically do importance sampling using the prior
-            var samples = linReg.WeightedPrior().SampleNParallel(1000);
+            var samples = linReg.WeightedPrior().SampleNParallel(100);
 
             var posteriorA = samples.Select(sample => ItemProb(sample.Item.a, sample.Prob));
             var posteriorB = samples.Select(sample => ItemProb(sample.Item.b, sample.Prob));
 
             // Graph the results
+            
             Debug.WriteLine("Posterior distribution of a:");
             Debug.WriteLine(Histogram.Weighted(posteriorA, 20, 2));
 
