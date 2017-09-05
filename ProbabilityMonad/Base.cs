@@ -17,6 +17,7 @@ namespace ProbCSharp
         public static Random Gen = new Random();
 
         #region Primitive object constructors
+
         /// <summary>
         /// Probability constructor
         /// </summary>
@@ -48,9 +49,11 @@ namespace ProbCSharp
         {
             return new Tuple<A, B>(a, b);
         }
+
         #endregion
 
         #region Distribution constructors
+
         /// <summary>
         /// Finite uniform distribution over list of items. 
         /// Only composable with other finite distributions.
@@ -153,6 +156,14 @@ namespace ProbCSharp
         {
             return new NormalPrimitive(mean, variance, Gen);
         }
+        /// <summary>
+        /// Primitive Normal distribution with precision
+        /// Only composable with other primitive distributions
+        /// </summary>
+        public static NormalPrimitiveWithPrecision NormalPrimitiveWithPrecision(double mean, double precision)
+        {
+            return new NormalPrimitiveWithPrecision(mean, precision, Gen);
+        }
 
         /// <summary>
         /// Primitive studentT distribution
@@ -189,25 +200,39 @@ namespace ProbCSharp
         {
             return new ExponentialPrimitive(rate);
         }
+
         /// <summary>
-        /// Primitive Normal distribution
+        /// Primitive LogNormal distribution
         /// Only composable with other primitive distributions
         /// </summary>
-        public static LogNormalPrimitive LogNormalPrimitive(double mean, double variance) {
+        public static LogNormalPrimitive LogNormalPrimitive(double mean, double variance)
+        {
             return new LogNormalPrimitive(mean, variance, Gen);
         }
 
-      public static LogNormalPrimitive LogNormalPrimitiveMu(double mu, double sigma)
-      {
-         return new LogNormalPrimitive(mu, sigma,true, Gen);
-      }
+        /// <summary>
+        /// Primitive LogNormal distribution
+        /// Only composable with other primitive distributions
+        /// </summary>
+        public static LogNormalPrimitive LogNormalPrimitiveMu(double mu, double sigma)
+        {
+            return new LogNormalPrimitive(mu, sigma, true, Gen);
+        }
 
-      /// <summary>
-      /// Normal distribution
-      /// </summary>
-      public static Dist<double> Normal(double mean, double variance)
+        /// <summary>
+        /// Normal distribution
+        /// </summary>
+        public static Dist<double> Normal(double mean, double variance)
         {
             return Primitive(NormalPrimitive(mean, variance));
+        }
+
+        /// <summary>
+        /// Normal distribution with mean and precision
+        /// </summary>
+        public static Dist<double> NormalWithPrecision(double mean, double precision)
+        {
+            return Primitive(NormalPrimitiveWithPrecision(mean, precision));
         }
 
         /// <summary>
@@ -229,82 +254,105 @@ namespace ProbCSharp
         /// <summary>
         /// Log Normal distribution
         /// </summary>
-        public static Dist<double> LogNormal(double mean, double variance) {
+        public static Dist<double> LogNormal(double mean, double variance)
+        {
             return Primitive(LogNormalPrimitive(mean, variance));
         }
 
-       public static Dist<double> LogNormalMu(double mu, double sigma)
-       {
-           return Primitive(LogNormalPrimitiveMu(mu, sigma));
-       }
+        public static Dist<double> LogNormalMu(double mu, double sigma)
+        {
+            return Primitive(LogNormalPrimitiveMu(mu, sigma));
+        }
 
 
-      /// <summary>
-      /// Primitive Beta distribution
-      /// Only composable with other primitive distributions
-      /// </summary>
-      public static BetaPrimitive BetaPrimitive(double alpha, double beta)
+        /// <summary>
+        /// Primitive Beta distribution
+        /// Only composable with other primitive distributions
+        /// </summary>
+        public static BetaPrimitive BetaPrimitive(double alpha, double beta)
         {
             return new BetaPrimitive(alpha, beta, Gen);
         }
 
-      /// <summary>
-      /// Primitive Beta distribution
-      /// Only composable with other primitive distributions
-      /// </summary>
-      public static GammaPrimitive GammaPrimitive(double shape, double rate) {
-         return new GammaPrimitive(shape, rate, Gen);
-      }
+        /// <summary>
+        /// Primitive Gamma distribution
+        /// Only composable with other primitive distributions
+        /// </summary>
+        public static GammaPrimitive GammaPrimitive(double shape, double rate)
+        {
+            return new GammaPrimitive(shape, rate, Gen);
+        }
+        /// <summary>
+        /// Primitive Inverse Gamma distribution
+        /// Only composable with other primitive distributions
+        /// </summary>
+        /// 
+        public static InverseGammaPrimitive InverseGammaPrimitive(double shape, double rate)
+        {
+            return new InverseGammaPrimitive(shape, rate, Gen);
+        }
 
-      public static MultiVariateNormalPrimitive MultiVariateNormalPrimitive(double[] mean, Matrix<double> covariance)
-      {
-         return new MultiVariateNormalPrimitive(mean, covariance, Gen);
-      }
+        public static MultiVariateNormalPrimitive MultiVariateNormalPrimitive(double[] mean, Matrix<double> covariance)
+        {
+            return new MultiVariateNormalPrimitive(mean, covariance, Gen);
+        }
 
-      /// <summary>
-      /// Primitive Beta distribution
-      /// Only composable with other primitive distributions
-      /// </summary>
-      public static DirichletPrimitive DirichletPrimitive(double[] alpha)
-      {
-         return new DirichletPrimitive(alpha, Gen);
-      }
-      /// <summary>
-      /// Beta distribution
-      /// </summary>
-      public static Dist<double> Gamma(double shape, double rate) {
-         return Primitive(GammaPrimitive(shape, rate));
-      }
+        /// <summary>
+        /// Primitive Beta distribution
+        /// Only composable with other primitive distributions
+        /// </summary>
+        public static DirichletPrimitive DirichletPrimitive(double[] alpha)
+        {
+            return new DirichletPrimitive(alpha, Gen);
+        }
 
-      /// <summary>
-      /// Beta distribution
-      /// </summary>
-      public static Dist<double> Beta(double alpha, double beta)
-      {
-         return Primitive(BetaPrimitive(alpha, beta));
-      }
+        /// <summary>
+        /// Gamma distribution
+        /// </summary>
+        public static Dist<double> Gamma(double shape, double rate)
+        {
+            return Primitive(GammaPrimitive(shape, rate));
+        }
 
-      /// <summary>
-      /// Beta distribution
-      /// </summary>
-      public static Dist<double[]> Dirichlet(double[] alpha)
-      {
-         return Primitive(DirichletPrimitive(alpha));
-      }
 
-      public static Dist<double[]> MultiVariateNormal(double[] mean, Matrix<double> covariance)
-      {
-         return Primitive(MultiVariateNormalPrimitive(mean, covariance));
-      }
-      #endregion
+        /// <summary>
+        /// Inverse Gamma distribution
+        /// </summary>
+        public static Dist<double> InverseGamma(double shape, double rate)
+        {
+            return Primitive(InverseGammaPrimitive(shape, rate));
+        }
+        /// <summary>
+        /// Beta distribution
+        /// </summary>
+        public static Dist<double> Beta(double alpha, double beta)
+        {
+            return Primitive(BetaPrimitive(alpha, beta));
+        }
 
-      #region GADT constructors
+        /// <summary>
+        /// Beta distribution
+        /// </summary>
+        public static Dist<double[]> Dirichlet(double[] alpha)
+        {
+            return Primitive(DirichletPrimitive(alpha));
+        }
 
-      #region Parallel constructors
-      /// <summary>
-      /// Wraps the distribution to defer evaluation until explicitly parallelized
-      /// </summary>
-      public static Dist<Dist<A>> Independent<A>(Dist<A> dist)
+        public static Dist<double[]> MultiVariateNormal(double[] mean, Matrix<double> covariance)
+        {
+            return Primitive(MultiVariateNormalPrimitive(mean, covariance));
+        }
+
+        #endregion
+
+        #region GADT constructors
+
+        #region Parallel constructors
+
+        /// <summary>
+        /// Wraps the distribution to defer evaluation until explicitly parallelized
+        /// </summary>
+        public static Dist<Dist<A>> Independent<A>(Dist<A> dist)
         {
             return new Independent<A>(dist);
         }
@@ -330,16 +378,19 @@ namespace ProbCSharp
         /// </summary>
         public static Dist<Tuple<T1, T2, T3>> RunIndependent<T1, T2, T3>(Dist<T1> dist1, Dist<T2> dist2, Dist<T3> dist3)
         {
-            return new RunIndependent3<T1, T2, T3, Tuple<T1, T2, T3>>(dist1, dist2, dist3, (t1, t2, t3) => Return(new Tuple<T1, T2, T3>(t1, t2, t3)));
+            return new RunIndependent3<T1, T2, T3, Tuple<T1, T2, T3>>(dist1, dist2, dist3,
+                (t1, t2, t3) => Return(new Tuple<T1, T2, T3>(t1, t2, t3)));
         }
 
         /// <summary>
         /// Evaluates three distributions in parallel, passing the results to a function
         /// </summary>
-        public static Dist<A> RunIndependentWith<T1, T2, T3, A>(Dist<T1> dist1, Dist<T2> dist2, Dist<T3> dist3, Func<T1, T2, T3, Dist<A>> run)
+        public static Dist<A> RunIndependentWith<T1, T2, T3, A>(Dist<T1> dist1, Dist<T2> dist2, Dist<T3> dist3,
+            Func<T1, T2, T3, Dist<A>> run)
         {
             return new RunIndependent3<T1, T2, T3, A>(dist1, dist2, dist3, run);
         }
+
         #endregion
 
         /// <summary>
@@ -385,6 +436,7 @@ namespace ProbCSharp
         #endregion
 
         #region Utility functions
+
         /// <summary>
         /// Aggregates probabilities of samples with identical values
         /// The samples are arranged in ascending order
@@ -404,11 +456,11 @@ namespace ProbCSharp
             var compacted =
                 samples.Weights
                     .GroupBy(ip => keyFunc(ip.Item))
-                    .Select(g => 
+                    .Select(g =>
                         ItemProb(
                             g.First().Item,
                             Prob(g.Select(ip => ip.Prob.Value).Sum())
-                        )
+                            )
                     );
             return Samples(compacted);
         }
@@ -428,22 +480,22 @@ namespace ProbCSharp
         /// </summary>
         public static Prob Pdf(PrimitiveDist<double[]> dist, double[] x)
         {
-
             if (dist is DirichletPrimitive)
             {
                 var dir = dist as DirichletPrimitive;
                 var d = new MathNet.Numerics.Distributions.Dirichlet(dir.alpha);
-                 
+
                 return Prob(d.Density(x));
             }
 
             if (dist is MultiVariateNormalPrimitive)
             {
-               var d = dist as MultiVariateNormalPrimitive;
-               
-               return Prob(d.mvn.Density(DenseMatrix.OfRowArrays(x)));
+                var d = dist as MultiVariateNormalPrimitive;
+
+                return Prob(d.mvn.Density(DenseMatrix.OfRowArrays(x)));
             }
-         throw new NotImplementedException("No PDF for this distribution implemented");
+
+            throw new NotImplementedException("No PDF for this distribution implemented");
         }
 
         /// <summary>
@@ -457,7 +509,13 @@ namespace ProbCSharp
                 var normal = dist as NormalPrimitive;
                 return Prob(MathNet.Numerics.Distributions.Normal.PDF(normal.Mean, Math.Sqrt(normal.Variance), y));
             }
-            if (dist is LogNormalPrimitive) {
+            if (dist is NormalPrimitiveWithPrecision)
+            {
+                var normal = dist as NormalPrimitiveWithPrecision;
+                return Prob(MathNet.Numerics.Distributions.Normal.PDF(normal.Mean, Math.Sqrt(1/normal.Precision), y));
+            }
+            if (dist is LogNormalPrimitive)
+            {
                 var lognormal = dist as LogNormalPrimitive;
                 return Prob(MathNet.Numerics.Distributions.LogNormal.PDF(lognormal.mu, lognormal.sigma, y));
             }
@@ -466,7 +524,8 @@ namespace ProbCSharp
                 var beta = dist as BetaPrimitive;
                 return Prob(MathNet.Numerics.Distributions.Beta.PDF(beta.alpha, beta.beta, y));
             }
-            if (dist is GammaPrimitive) {
+            if (dist is GammaPrimitive)
+            {
                 var gamma = dist as GammaPrimitive;
                 return Prob(MathNet.Numerics.Distributions.Gamma.PDF(gamma.shape, gamma.rate, y));
             }
@@ -501,21 +560,21 @@ namespace ProbCSharp
             throw new ArgumentException("Can only calculate PDF for primitive distributions");
         }
 
-      public static Prob Pdf(Dist<double[]> dist, double[] y)
-      {
-         if (dist is Primitive<double[]>)
-         {
-            var primitive = dist as Primitive<double[]>;
-            return Pdf(primitive.dist, y);
-         }
-         throw new ArgumentException("Can only calculate PDF for primitive distributions");
-      }
+        public static Prob Pdf(Dist<double[]> dist, double[] y)
+        {
+            if (dist is Primitive<double[]>)
+            {
+                var primitive = dist as Primitive<double[]>;
+                return Pdf(primitive.dist, y);
+            }
+            throw new ArgumentException("Can only calculate PDF for primitive distributions");
+        }
 
 
-      /// <summary>
-      /// Appends a value to a list. Non-mutative.
-      /// </summary>
-      public static IEnumerable<A> Append<A>(IEnumerable<A> list, A value)
+        /// <summary>
+        /// Appends a value to a list. Non-mutative.
+        /// </summary>
+        public static IEnumerable<A> Append<A>(IEnumerable<A> list, A value)
         {
             var appendList = new List<A>(list);
             appendList.Add(value);
@@ -527,8 +586,9 @@ namespace ProbCSharp
         /// </summary>
         public static double Sigmoid(double x)
         {
-            return 1 / (1 + Math.Exp(-x));
+            return 1/(1 + Math.Exp(-x));
         }
+
         #endregion
     }
 }

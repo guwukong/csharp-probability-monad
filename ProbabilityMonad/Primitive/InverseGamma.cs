@@ -2,12 +2,12 @@
 
 namespace ProbCSharp
 {
-    public class InverseGamma : PrimitiveDist<double>
+    public class InverseGammaPrimitive : PrimitiveDist<double>
     {
         public double shape;
         public double rate;
         public MathNet.Numerics.Distributions.InverseGamma dist;
-        public InverseGamma(double shape, double rate, Random gen)
+        public InverseGammaPrimitive(double shape, double rate, Random gen)
         {
             dist = new MathNet.Numerics.Distributions.InverseGamma(shape, rate, gen);
         }

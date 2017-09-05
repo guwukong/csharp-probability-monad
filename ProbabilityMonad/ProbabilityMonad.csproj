@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Base.cs" />
+    <Compile Include="HighestDensityInterval.cs" />
     <Compile Include="LogNormalCreate.cs" />
     <Compile Include="Primitive\Beta.cs" />
     <Compile Include="Primitive\InverseGamma.cs" />

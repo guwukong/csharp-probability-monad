@@ -6,8 +6,10 @@ using static ProbCSharp.Test.Models.IndianGpaModel;
 using ProbCSharp.Test.Models;
 using System.Linq;
 using System.Collections.Generic;
+using FluentAssertions;
 using MathNet.Numerics.Distributions;
 using MathNet.Numerics.Statistics;
+using static ProbCSharp.Test.Models.ObservationExt;
 
 namespace ProbCSharp.Test
 {
@@ -23,13 +25,50 @@ namespace ProbCSharp.Test
                 select m;
             var samples = hist.SampleN(1000);
             Debug.WriteLine(Histogram.Unweighted(samples));
+            //Debug.WriteLine(Histogram.Unweighted(samples));
 
         }
 
         [TestMethod]
         public void LearnGaussian()
         {
-                
+            double[] data = new double[100];
+            var r = new Normal(0.0, 1.0);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                data[i] = r.Sample();
+            }
+
+            var priors = from mean in Normal(0.0, 100.0)
+                from variance in InverseGamma(1.0, 1.0)
+                select new Param(mean, variance);
+
+            IEnumerable<ItemProb<double>> posteriorA = null;
+            IEnumerable<ItemProb<double>> posteriorB = null;
+
+            foreach (var d in data)
+            {
+                var p = Observation.UpdateWithObservation(priors, d);
+
+                var ss = p.WeightedPrior().SampleN(500);
+                posteriorA = ss.Select(sample => ItemProb(sample.Item.a, sample.Prob));
+                posteriorB = ss.Select(sample => ItemProb(sample.Item.b, sample.Prob));
+
+
+            }
+
+            var hdiPA = HighestDensityInterval.FindUnivariateHdi(posteriorA, 0.5);
+            var hdiPB = HighestDensityInterval.FindUnivariateHdi(posteriorB, 0.5);
+
+
+            Debug.WriteLine("Posterior distribution of a:");
+            Debug.WriteLine(Histogram.Weighted(posteriorA));
+            Debug.WriteLine("Posterior distribution of b:");
+            Debug.WriteLine(Histogram.Weighted(posteriorB));
+
+            Debug.WriteLine($"PA HDI Min: {hdiPA.Min} Max: {hdiPA.Max}");
+            Debug.WriteLine($"PB HDI Min: {hdiPB.Min} Max: {hdiPB.Max}");
         }
 
         [TestMethod]
@@ -93,7 +132,7 @@ namespace ProbCSharp.Test
             var posteriorB = samples.Select(sample => ItemProb(sample.Item.b, sample.Prob));
 
             // Graph the results
-            
+
             Debug.WriteLine("Posterior distribution of a:");
             Debug.WriteLine(Histogram.Weighted(posteriorA, 20, 2));
 
